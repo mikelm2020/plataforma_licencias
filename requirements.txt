@@ -1,0 +1,5 @@
+Django>=4.0
+psycopg2-binary # Driver para PostgreSQL
+fdb # Driver para Firebird
+python-dotenv # Para cargar variables de entorno
+python-dateutil

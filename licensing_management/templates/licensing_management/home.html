@@ -1,0 +1,26 @@
+{% extends "licensing_management/base.html" %}
+
+{% block title %}Inicio - Plataforma de Licencias{% endblock %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Bienvenido a la Plataforma de Licencias de Software</h1>
+        <p class="col-md-8 fs-4">Gestione fácilmente clientes y licencias de software, con datos sincronizados desde su base de datos Firebird.</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'client_list' %}" role="button">Ver Clientes Importados</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Clientes</h2>
+        <p>Acceda a la lista de todos sus clientes, con su información clave importada directamente desde su sistema Aspel SAE.</p>
+        <p><a class="btn btn-secondary" href="{% url 'client_list' %}" role="button">Ver detalles &raquo;</a></p>
+    </div>
+    <div class="col-md-6">
+        <h2>Licencias</h2>
+        <p>Visualice y gestione las licencias de sus clientes, incluyendo fechas de vigencia, tipo de licencia y versión del software.</p>
+        <p><a class="btn btn-secondary" href="#" role="button">Ver detalles &raquo;</a></p>
+    </div>
+</div>
+{% endblock %}

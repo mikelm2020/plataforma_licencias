@@ -1,0 +1,8 @@
+/* Ejemplo de CSS básico en style.css */
+body {
+    padding-top: 56px; /* Para que el contenido no quede detrás del navbar fijo de Bootstrap */
+}
+footer {
+    background-color: #f8f9fa; /* Color de fondo del pie de página */
+    color: #6c757d; /* Color del texto */
+}

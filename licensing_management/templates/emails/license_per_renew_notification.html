@@ -1,0 +1,66 @@
+{# licensing_management/templates/emails/license_per_renew_notification.html #}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificación de Licencia Vencida</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+        .header { background-color: #dc3545; color: white; padding: 10px 20px; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { padding: 20px; }
+        .footer { text-align: center; font-size: 0.8em; color: #777; margin-top: 20px; padding-top: 10px; border-top: 1px solid #eee; }
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .data-table th, .data-table td { border: 1px solid #eee; padding: 8px; text-align: left; }
+        .data-table th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>¡Atención: Su Licencia está por vencer!</h2>
+        </div>
+        <div class="content">
+            <p>Estimado/a <strong>{{ cliente_nombre }}</strong>,</p>
+            <p>Le informamos que su licencia de suscripción está por vencer. Por favor, revise los detalles a continuación:</p>
+
+            <table class="data-table">
+                <tr>
+                    <th>Cliente</th>
+                    <td>{{ cliente_nombre }} (RFC: {{ cliente_rfc }})</td>
+                </tr>
+                <tr>
+                    <th>Sistema</th>
+                    <td>{{ sistema_nombre }}</td>
+                </tr>
+                <tr>
+                    <th>Identificador de Licencia</th>
+                    <td>{{ licencia_id }}</td>
+                </tr>
+                <tr>
+                    <th>Periodicidad</th>
+                    <td>{{ licencia_periodicidad }}</td>
+                </tr>
+                <tr>
+                    <th>Fecha de Vencimiento</th>
+                    <td><strong>{{ fecha_vencimiento }}</strong></td>
+                </tr>
+                <tr>
+                    <th>Estado Actual</th>
+                    <td><strong>{{ licencia_estado }}</strong></td>
+                </tr>
+            </table>
+
+            <p style="margin-top: 20px;">Es importante que renueve su licencia para evitar interrupciones en el servicio.</p>
+            <p>Por favor, póngase en contacto conmigo para gestionar la renovación. Puede responder a este correo o llamar al 5536343913.</p>
+
+            <p>Agradecemos su atención.</p>
+            <p>Atentamente,<br>Ing. Miguel Angel López Monroy</p>
+        </div>
+        <div class="footer">
+            Este es un correo electrónico automático, por favor no lo responda directamente a menos que se indique lo contrario.
+        </div>
+    </div>
+</body>
+</html>

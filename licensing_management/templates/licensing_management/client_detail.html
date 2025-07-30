@@ -1,0 +1,96 @@
+{% extends "licensing_management/base.html" %}
+
+{% block title %}Detalles de Cliente - {{ cliente.nombre }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'client_list' %}">Clientes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ cliente.nombre }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-6">
+        <h1 class="mb-4">Detalles del Cliente: {{ cliente.nombre }}</h1>
+        <div class="card mb-3">
+            <div class="card-header">
+                Información General
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Clave:</strong> {{ cliente.clave_cliente }}</li>
+                <li class="list-group-item"><strong>RFC:</strong> {{ cliente.rfc|default:"N/A" }}</li>
+                <li class="list-group-item"><strong>Correo:</strong> {{ cliente.correo_electronico|default:"N/A" }}</li>
+                <li class="list-group-item"><strong>Teléfono:</strong> {{ cliente.telefono|default:"N/A" }}</li>
+                <li class="list-group-item"><strong>Fecha de Registro:</strong> {{ cliente.fecha_registro|date:"d M Y H:i" }}</li>
+            </ul>
+        </div>
+        <a href="{% url 'client_list' %}" class="btn btn-secondary mt-3">Volver a la lista de clientes</a>
+    </div>
+    <div class="col-md-6">
+        <h2 class="mb-4">Licencias del Cliente</h2>
+        <p>
+            <a href="{% url 'add_license' cliente.clave_cliente %}" class="btn btn-success mb-3">Añadir Nueva Licencia</a>
+        </p>
+        {% if licencias %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th>Sistema</th>
+                            <th>Identificador</th>
+                            <th>Tipo</th>
+                            <th>Período</th>
+                            <th>Vigencia Inicio</th>
+                            <th>Vigencia Fin</th>
+                            <th>Estado</th>
+                            <th>Usuarios</th>
+                            <th>Versión del Sistema</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for licencia in licencias %}
+                        <tr>
+                            <td>{{ licencia.tipo_sistema.nombre }}</td>
+                            <td>{{ licencia.identificador_licencia }}</td>
+                            <td>{{ licencia.get_tipo_licencia_display }}</td> {# Para mostrar el nombre legible del choice #}
+                            <td>{{ licencia.get_periodo_licencia_display|default:"N/A" }}</td> {# Para mostrar el nombre legible del choice #}
+                            <td>{{ licencia.fecha_inicio_vigencia}}</td> 
+                            <td>{{ licencia.fecha_fin_vigencia|default:"Perpetua" }}</td> {# Considera si este campo debería ser None para perpetuas #}
+                            <td>
+                                <span class="badge 
+                                    {% if licencia.estado == 'ACTIVA' %}bg-success
+                                    {% elif licencia.estado == 'VENCIDA' %}bg-danger
+                                    {% elif licencia.estado == 'PENDIENTE_RENOVACION' %}bg-warning text-dark
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ licencia.get_estado_display }}
+                                </span>
+                            </td>
+                            <td>{{ licencia.numero_usuarios }}</td>
+                            <td>{{ licencia.version_sistema|default:"N/A" }}</td>
+                            <td>
+                                <a href="{% url 'update_license' cliente.clave_cliente licencia.id %}" class="btn btn-warning btn-sm me-1" title="Editar Licencia">
+                                    <i class="bi bi-pencil"></i> {# Icono de lápiz #}
+                                </a>
+                                {# Formulario para eliminar la licencia #}
+                                <form action="{% url 'delete_license' cliente.clave_cliente licencia.id %}" method="post" class="d-inline" onsubmit="return confirm('¿Estás seguro de que quieres eliminar la licencia {{ licencia.identificador_licencia }}? Esta acción no se puede deshacer.');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Eliminar Licencia">
+                                        <i class="bi bi-x-lg"></i> {# Icono de "x" #}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                Este cliente no tiene licencias registradas.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

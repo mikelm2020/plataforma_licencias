@@ -1,0 +1,92 @@
+{% extends "licensing_management/base.html" %}
+
+{% block title %}Clientes - Plataforma de Licencias{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Lista de Clientes</h1>
+
+
+
+{# Formulario de Filtros #}
+<div class="card mb-4">
+    <div class="card-header">
+        Filtros de Búsqueda
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{% url 'client_list' %}" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="id_rfc" class="form-label">RFC</label>
+                <input type="text" class="form-control" id="id_rfc" name="rfc" value="{{ filtro_rfc }}">
+            </div>
+            <div class="col-md-3">
+                <label for="id_clave" class="form-label">Clave Cliente</label>
+                <input type="text" class="form-control" id="id_clave" name="clave" value="{{ filtro_clave }}">
+            </div>
+            <div class="col-md-4">
+                <label for="id_nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="id_nombre" name="nombre" value="{{ filtro_nombre }}">
+            </div>
+            <div class="col-md-2 d-flex"> {# Usamos d-flex para alinear los botones #}
+                    {# Botón de Buscar con icono de lupa #}
+                    <button type="submit" class="btn btn-primary me-2" title="Buscar">
+                        <i class="bi bi-search"></i> {# Icono de lupa #}
+                    </button>
+                    {# Botón para Borrar Filtros con icono de "x" #}
+                    {# Este botón envía el formulario sin parámetros de filtro, reseteándolos #}
+                    <a href="{% url 'client_list' %}" class="btn btn-secondary" title="Borrar Filtros">
+                        <i class="bi bi-x-circle"></i> {# Icono de círculo con X #}
+                    </a>
+                </div>
+        </form>
+    </div>
+</div>
+{% if clientes %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Clave</th>
+                <th>Nombre</th>
+                <th>RFC</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
+                <th>Estado Licencias</th> {# ¡NUEVA COLUMNA! #}
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr class="{% if cliente.has_expired_subscription_license %}table-danger{% endif %}">
+                <td>{{ cliente.clave_cliente }}</td>
+                <td>{{ cliente.nombre }}</td>
+                <td>{{ cliente.rfc|default:"N/A" }}</td> {# Muestra N/A si el RFC es nulo #}
+                <td>{{ cliente.correo_electronico|default:"N/A" }}</td>
+                <td>{{ cliente.telefono|default:"N/A" }}</td>
+                <td>
+                    {# Indicador de licencias vencidas #}
+                    {% if cliente.has_expired_subscription_license %}
+                        <span class="badge bg-danger">Vencida(s)</span>
+                        <i class="bi bi-exclamation-triangle-fill text-danger ms-1" title="Licencia(s) de suscripción vencida(s)"></i>
+                    {% else %}
+                        <span class="badge bg-success">Activa(s)</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'client_detail' cliente.clave_cliente %}" class="btn btn-info btn-sm" title="Ver Detalles del Cliente">
+                        <i class="bi bi-eye"></i> {# Icono de ojo #}
+                    </a>
+                    {# Aquí podríamos añadir botones para editar/eliminar en el futuro #}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-warning" role="alert">
+    No hay clientes registrados en la base de datos.
+    <a href="{% url 'home' %}" class="alert-link">Vuelve a la página de inicio</a> o
+    ejecuta el comando de importación: `make django command="import_clients"`
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+
+services:
+  db:
+    image: postgres:15-alpine # Usamos la versión 15 de PostgreSQL, ligera con Alpine Linux
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/ # Montamos un volumen para persistir los datos
+    env_file: # ¡Añadimos esta línea para cargar desde .env!
+      - .env
+    ports:
+      - "5432:5432" # Expone el puerto de PostgreSQL al host (opcional, pero útil para herramientas como PgAdmin)
+    restart: unless-stopped
+
+  web:
+    build: . # Docker construirá la imagen de este servicio usando el Dockerfile en el directorio actual
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000" # Comandos para ejecutar Django
+    volumes:
+      - .:/app # Monta el directorio actual (tu código Django) dentro del contenedor en /app
+    ports:
+      - "8000:8000" # Expone el puerto 8000 de Django al host
+    env_file:
+      - .env # Carga variables de entorno desde un archivo .env
+    depends_on:
+      - db # Asegura que la base de datos se inicie antes que el servicio web
+    restart: unless-stopped
+
+volumes:
+  postgres_data: # Define el volumen para la persistencia de datos de PostgreSQL
