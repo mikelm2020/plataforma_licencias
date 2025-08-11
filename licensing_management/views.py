@@ -128,6 +128,7 @@ def update_license_view(request, clave_cliente, licencia_id):
         form = LicenciaUpdateForm(request.POST, instance=licencia)
         if form.is_valid():
             pago_realizado = form.cleaned_data.get("pago_realizado")
+            fecha_form_inicio_vigencia = form.cleaned_data.get("fecha_inicio_vigencia")
 
             # Inicia una transacción para asegurar que todo se guarde o nada
             with transaction.atomic():
@@ -138,15 +139,21 @@ def update_license_view(request, clave_cliente, licencia_id):
                 # (o si se quiere renovar una ACTIVA, según tu lógica de negocio)
                 # Aquí la lógica es para renovación de periodos que venzan.
                 # Podemos ajustar esta lógica si solo quieres que renueve si está "VENCIDA" o "PENDIENTE_RENOVACION"
-                if pago_realizado and licencia.tipo_licencia != Licencia.PERPETUA:
+                if (
+                    pago_realizado
+                    and licencia.tipo_licencia != Licencia.PERIODO_PERPETUA
+                ):
                     # Si estaba VENCIDA o PENDIENTE_RENOVACION, o simplemente se está renovando una ACTIVA
                     # Actualiza fecha de inicio a HOY y la fecha de fin se recalculará
-                    licencia_actualizada.fecha_inicio_vigencia = timezone.now().date()
+                    # licencia_actualizada.fecha_inicio_vigencia = timezone.now().date()
+                    licencia_actualizada.fecha_inicio_vigencia = (
+                        fecha_form_inicio_vigencia
+                    )
                     licencia_actualizada.fecha_fin_vigencia = (
                         None  # Forzar recálculo en save()
                     )
                     licencia_actualizada.estado = (
-                        Licencia.ACTIVA
+                        Licencia.ESTADO_ACTIVA
                     )  # Marcar como activa después de pago
 
                 licencia_actualizada.save()  # Guarda los cambios

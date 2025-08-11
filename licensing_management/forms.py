@@ -63,14 +63,19 @@ class LicenciaUpdateForm(forms.ModelForm):
             "version_sistema",
             "observaciones",
             "estado",  # Permitir cambiar el estado (ej. a ACTIVA)
+            "fecha_inicio_vigencia",  # Permitir cambiar la fecha de inicio
         ]
         widgets = {
             "version_sistema": forms.TextInput(attrs={"class": "form-control"}),
             "observaciones": forms.Textarea(attrs={"rows": 3, "class": "form-control"}),
             "estado": forms.Select(attrs={"class": "form-select"}),
+            "fecha_inicio_vigencia": forms.DateInput(
+                attrs={"type": "date", "class": "form-control"}
+            ),
         }
         labels = {
             "version_sistema": "Versión del Sistema",
             "observaciones": "Observaciones Adicionales",
             "estado": "Estado de la Licencia",
+            "fecha_inicio_vigencia": "Fecha de Inicio de Vigencia",
         }
